@@ -1,0 +1,10 @@
+name: "Setup Cargo Lambda"
+description: "Sets up cargo-lambda for building rust functions to run on AWS Lambda"
+inputs:
+  version:
+    description: "Version of cargo-lambda to install"
+    required: true
+    default: "v0.11.1"
+runs:
+  using: "node16"
+  main: "dist/index.js"

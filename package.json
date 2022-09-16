@@ -1,0 +1,31 @@
+{
+  "name": "setup-cargo-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerj9/setup-cargo-lambda.git"
+  },
+  "keywords": [
+    "github",
+    "action",
+    "cargo",
+    "cargo-lambda",
+    "rust",
+    "aws"
+  ],
+  "author": "zerj9",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zerj9/setup-cargo-lambda/issues"
+  },
+  "homepage": "https://github.com/zerj9/setup-cargo-lambda#readme",
+  "devDependencies": {
+    "@actions/core": "^1.9.1",
+    "@actions/tool-cache": "^2.0.1"
+  }
+}
