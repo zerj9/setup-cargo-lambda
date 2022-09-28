@@ -1,5 +1,6 @@
 const path = require('path')
 const core = require('@actions/core');
+import * as github from '@actions/github';
 const tc = require('@actions/tool-cache');
 
 function getDownloadURL(version) {
@@ -7,26 +8,32 @@ function getDownloadURL(version) {
   return url
 }
 
+async function downloadCargoTool(downloadUrl) {
+  // Download the specific version of the tool
+  const token = github.context.token;
+  const downloadPath = await tc.downloadTool(downloadUrl, undefined, `token ${token}`);
+
+  // Extract the tarball onto the runner
+  const cargoLambdaPath = await tc.extractTar(downloadPath);
+  console.log(`Extracted path is: ${cargoLambdaPath}`)
+  return cargoLambdaPath;
+}
+
 async function setup() {
   // Get version of tool to be installed
   const version = core.getInput('version');
   console.log(`Input version is: ${version}`);
 
-  // Download the specific version of the tool, e.g. as a tarball
   const downloadUrl = getDownloadURL(version);
   console.log(`Download url is: ${downloadUrl}`)
-  const downloadPath = await tc.downloadTool(downloadUrl);
-  console.log(`Downloaded path is: ${downloadPath}`)
+  const toolPath = await downloadCargoTool(downloadUrl)
+  console.log(`Tool path is: ${toolPath}`)
 
-  // Extract the tarball onto the runner
-  const cargoLambdaPath = await tc.extractTar(downloadPath);
-  console.log(`Extracted path is: ${cargoLambdaPath}`)
-
-  const cachePath = await tc.cacheDir(cargoLambdaPath, 'cargo-lambda', version)
+  // const cachePath = await tc.cacheDir(cargoLambdaPath, 'cargo-lambda', version)
 
   // Expose the tool by adding it to the PATH
-  console.log(`Adding ${cachePath} to PATH`);
-  core.addPath(cachePath)
+  // console.log(`Adding ${cachePath} to PATH`);
+  core.addPath(toolPath)
 }
 
 

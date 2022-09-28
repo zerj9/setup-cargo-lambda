@@ -6524,6 +6524,14 @@ exports["default"] = _default;
 
 /***/ }),
 
+/***/ 4495:
+/***/ ((module) => {
+
+module.exports = eval("require")("@actions/github");
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -6677,16 +6685,61 @@ module.exports = require("util");
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__nccwpck_require__.r = (exports) => {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
+"use strict";
+__nccwpck_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(4495);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_0__);
 const path = __nccwpck_require__(1017)
 const core = __nccwpck_require__(6811);
+
 const tc = __nccwpck_require__(2827);
 
 function getDownloadURL(version) {
@@ -6694,26 +6747,32 @@ function getDownloadURL(version) {
   return url
 }
 
+async function downloadCargoTool(downloadUrl) {
+  // Download the specific version of the tool
+  const token = _actions_github__WEBPACK_IMPORTED_MODULE_0__.context.token;
+  const downloadPath = await tc.downloadTool(downloadUrl, undefined, `token ${token}`);
+
+  // Extract the tarball onto the runner
+  const cargoLambdaPath = await tc.extractTar(downloadPath);
+  console.log(`Extracted path is: ${cargoLambdaPath}`)
+  return cargoLambdaPath;
+}
+
 async function setup() {
   // Get version of tool to be installed
   const version = core.getInput('version');
   console.log(`Input version is: ${version}`);
 
-  // Download the specific version of the tool, e.g. as a tarball
   const downloadUrl = getDownloadURL(version);
   console.log(`Download url is: ${downloadUrl}`)
-  const downloadPath = await tc.downloadTool(downloadUrl);
-  console.log(`Downloaded path is: ${downloadPath}`)
+  const toolPath = await downloadCargoTool(downloadUrl)
+  console.log(`Tool path is: ${toolPath}`)
 
-  // Extract the tarball onto the runner
-  const cargoLambdaPath = await tc.extractTar(downloadPath);
-  console.log(`Extracted path is: ${cargoLambdaPath}`)
-
-  const cachePath = await tc.cacheDir(cargoLambdaPath, 'cargo-lambda', version)
+  // const cachePath = await tc.cacheDir(cargoLambdaPath, 'cargo-lambda', version)
 
   // Expose the tool by adding it to the PATH
-  console.log(`Adding ${cachePath} to PATH`);
-  core.addPath(cachePath)
+  // console.log(`Adding ${cachePath} to PATH`);
+  core.addPath(toolPath)
 }
 
 
