@@ -26,6 +26,7 @@
   "homepage": "https://github.com/zerj9/setup-cargo-lambda#readme",
   "devDependencies": {
     "@actions/core": "^1.9.1",
+    "@actions/github": "^5.1.0",
     "@actions/tool-cache": "^2.0.1"
   }
 }
