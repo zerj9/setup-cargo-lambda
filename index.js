@@ -19,20 +19,35 @@ async function downloadCargoTool(downloadUrl) {
   return cargoLambdaPath;
 }
 
+async function getTool(version) {
+  const arch = 'i686' // To do: Add functionality to download for other architectures.
+  let toolPath = tc.find('cargo-lambda', version, arch);
+  console.log(`Cache searched. Path returned is: ${toolPath}`);
+
+  if (toolPath) {
+    console.log(`Found in cache. Path: ${toolPath}`);
+    return toolPath;
+  }
+
+  const downloadUrl = getDownloadURL(version);
+  console.log(`Tool not found in cache. Downloading from: ${downloadUrl}`);
+  toolPath = await downloadCargoTool(downloadUrl);
+  console.log(`Tool path is: ${toolPath}`);
+
+  console.log(`Adding version: ${version} with arch: ${arch} to cache`);
+  const cacheDir = await tc.cacheDir(toolPath, 'cargo-lambda', version, arch);
+  return cacheDir;
+}
+
 async function setup() {
   // Get version of tool to be installed
   const version = core.getInput('version');
   console.log(`Input version is: ${version}`);
 
-  const downloadUrl = getDownloadURL(version);
-  console.log(`Download url is: ${downloadUrl}`)
-  const toolPath = await downloadCargoTool(downloadUrl)
-  console.log(`Tool path is: ${toolPath}`)
-
-  // const cachePath = await tc.cacheDir(cargoLambdaPath, 'cargo-lambda', version)
+  const toolPath = await getTool(version);
 
   // Expose the tool by adding it to the PATH
-  // console.log(`Adding ${cachePath} to PATH`);
+  // console.log(`Adding ${toolPath} to PATH`);
   core.addPath(toolPath)
 }
 
