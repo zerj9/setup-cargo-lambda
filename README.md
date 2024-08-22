@@ -15,12 +15,12 @@ jobs:
   cargo-lambda-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - uses: goto-bus-stop/setup-zig@v1
+      - uses: goto-bus-stop/setup-zig@v2
         with:
-          version: 0.9.1
-      - uses: zerj9/setup-cargo-lambda@v0.1.0
+          version: 0.13.0
+      - uses: zerj9/setup-cargo-lambda@v0.1.1
       - run: cargo lambda build --arm64
         working-directory: lambda_function
 ```
