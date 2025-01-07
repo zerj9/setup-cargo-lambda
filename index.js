@@ -3,7 +3,7 @@ const core = require('@actions/core');
 const tc = require('@actions/tool-cache');
 
 function getDownloadURL(version) {
-  url = `https://github.com/cargo-lambda/cargo-lambda/releases/download/${version}/cargo-lambda-${version}.i686-unknown-linux-musl.tar.gz`;
+  url = `https://github.com/cargo-lambda/cargo-lambda/releases/download/${version}/cargo-lambda-${version}.x86_64-unknown-linux-musl.tar.gz`;
   return url
 }
 
